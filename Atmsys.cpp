@@ -5,10 +5,10 @@ using namespace std;
 class user
 {
 private:
-    int id = NULL;
+    int id;
     char username[20];
-    float balance = NULL;
-    float withdraw = NULL;
+    float balance;
+    float withdraw;
 
 public:
     void setname(char name[]);
@@ -78,6 +78,7 @@ int menu(void)
     cout << "\n\n\t\t\tATM machince software ";
     cout << "\n\n\t------------------------------------------";
     cout << "\n\t 1-) Create Account \n\t 2-) Check Balance \n\t 3-) Withdraw Amount\n\t 4-) Generate Receipt \n\t 5-) Exit ";
+    cout << "\n\nEnter choice :: ";
     cin >> choice;
     return (choice);
 }
@@ -85,8 +86,7 @@ int main()
 {
     while (1)
     {
-        /* code */
-
+        system("cls");
         int choice;
         char name[20];
         int id, i;
@@ -99,7 +99,7 @@ int main()
             cin >> id;
             i = id;
             cout << "\nEnter Username :";
-            gets(name);
+            scanf("%s", &name);
             cout << "\nEnter balance :";
             cin >> balance;
             user id;
@@ -119,9 +119,12 @@ int main()
             break;
         case 5:
             exit(0);
+            break;
         default:
             cout << "\n\nInvalid input !!";
             break;
         }
+        cout << "\n\n";
+        system("pause");
     }
 }
