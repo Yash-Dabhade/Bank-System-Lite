@@ -5,10 +5,10 @@ using namespace std;
 class user
 {
 private:
-    int id;
+    long int id;
     char username[20];
-    float balance;
-    float withdraw;
+    long double balance;
+    long double withdraw;
 
 public:
     void setname(char name[]);
