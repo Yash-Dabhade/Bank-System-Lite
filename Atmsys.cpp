@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 using namespace std;
 class user
 {
@@ -11,55 +12,103 @@ private:
     long double withdraw;
 
 public:
-    void setname(char name[]);
-    void setid(int i);
-    void setbalance(float b);
-    void checkbalance(void);
-    void withdrawamount();
+    void setname(void);
+    void setid(void);
+    void setbalance(void);
+    void checkbalance();
+    void WithdrawAmount();
     void generateReceipt();
+    long int getid();
 };
-void user::setname(char name[])
+long int user::getid()
 {
-    strcpy(username, name);
+    return (id);
 }
-void user::setid(int i)
+struct LinkedList
 {
-    id = i;
+    user obj;
+    struct LinkedList *next;
+};
+void CreateAccount(struct LinkedList **head)
+{
+    struct LinkedList *temp, *t;
+    temp = (struct LinkedList *)malloc(sizeof(struct LinkedList));
+    temp->next = NULL;
+    cout << "\nEnter ID :";
+    temp->obj.setid();
+    cout << "\nEnter Username :";
+    temp->obj.setname();
+    cout << "\nEnter balance :";
+    temp->obj.setbalance();
+    if (*head == NULL)
+    {
+        *head = temp;
+    }
+    else
+    {
+        t = *head;
+        while (t->next)
+            t = t->next;
+        t->next = temp;
+    }
 }
-void user::setbalance(float b)
+struct LinkedList *SearchAccount(struct LinkedList **head, long int sid)
 {
-    balance = b;
+    if (*head == NULL)
+    {
+        cout << "\nNo account Found or Registered";
+        return (NULL);
+    }
+    long int i;
+    struct LinkedList *t;
+    t = *head;
+
+    while (t != NULL)
+    {
+        if (t->obj.getid() == sid)
+        {
+            return (t);
+        }
+        t = t->next;
+    }
+    return (NULL);
+}
+struct LinkedList *head = NULL;
+void user::setname(void)
+{
+    cin >> username;
+}
+void user::setid(void)
+{
+    cin >> id;
+}
+void user::setbalance(void)
+{
+    cin >> balance;
 }
 void user::checkbalance()
 {
-    if (balance == NULL)
-    {
-        printf("\nNo account Found");
-        return;
-    }
-    cout << "\n Balance :: " << balance;
+    cout << "\nUser Name :: " << username;
+    cout << "\nBalance :: " << balance;
 }
-void user::withdrawamount(void)
+void user::WithdrawAmount()
 {
 
-    if (balance == NULL)
-    {
-        printf("\nNo account Found");
-        return;
-    }
-    float wd;
+    // struct LinkedList *acc;
+    // float wd;
+    // acc = SearchAccount(head, id);
+    // if (acc == NULL)
+    // {
+    //     printf("\nInvalid ID or Create New Account!!");
+    //     return;
+    // }
     cout << "\nEnter withdraw amount :";
-    cin >> wd;
-    balance = balance - wd;
-    withdraw = wd;
+    cin >> withdraw;
+    balance = balance - withdraw;
+    cout << "\nTake Money !!!";
 }
 void user::generateReceipt(void)
 {
-    if (balance == NULL || id == NULL)
-    {
-        printf("\nNo account Found");
-        return;
-    }
 
     system("cls");
     cout << "\n\n\t------------------------------------------";
@@ -75,10 +124,10 @@ int menu(void)
 {
     int choice;
     cout << "\n\n\t------------------------------------------";
-    cout << "\n\n\t\t\tATM machince software ";
+    cout << "\n\n\t\t\t ATM machince software ";
     cout << "\n\n\t------------------------------------------";
-    cout << "\n\t 1-) Create Account \n\t 2-) Check Balance \n\t 3-) Withdraw Amount\n\t 4-) Generate Receipt \n\t 5-) Exit ";
-    cout << "\n\nEnter choice :: ";
+    cout << "\n\t 1-) Create Account \n\t 2-) Check Balance  \n\t 3-) Withdraw Amount\n\t 4-) Generate Receipt \n\t 5-) Exit ";
+    cout << "\n\n\tEnter choice :: ";
     cin >> choice;
     return (choice);
 }
@@ -88,34 +137,46 @@ int main()
     {
         system("cls");
         int choice;
-        char name[20];
-        int id, i;
-        float balance;
+        long int id;
+        struct LinkedList *account;
         choice = menu();
         switch (choice)
         {
         case 1:
-            cout << "\nEnter ID :";
-            cin >> id;
-            i = id;
-            cout << "\nEnter Username :";
-            scanf("%s", &name);
-            cout << "\nEnter balance :";
-            cin >> balance;
-            user id;
-            id.setid(i);
-            id.setname(name);
-            id.setbalance(balance);
-            cout << "\nCongratulations !!! Account Created ";
+            CreateAccount(&head);
             break;
         case 2:
-            id.checkbalance();
+            cout << "\nEnter id of account :: ";
+            cin >> id;
+            account = SearchAccount(&head, id);
+            if (account == NULL)
+            {
+                cout << "\nInvalid id";
+                break;
+            }
+            account->obj.checkbalance();
             break;
         case 3:
-            id.withdrawamount();
+            cout << "\nEnter id of account :: ";
+            cin >> id;
+            account = SearchAccount(&head, id);
+            if (account == NULL)
+            {
+                cout << "\nInvalid id";
+                break;
+            }
+            account->obj.WithdrawAmount();
             break;
         case 4:
-            id.generateReceipt();
+            cout << "\nEnter id of account :: ";
+            cin >> id;
+            account = SearchAccount(&head, id);
+            if (account == NULL)
+            {
+                cout << "\nInvalid id";
+                break;
+            }
+            account->obj.generateReceipt();
             break;
         case 5:
             exit(0);
