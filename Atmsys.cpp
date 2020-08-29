@@ -12,12 +12,20 @@ private:
     long double withdraw;
 
 public:
+    user()
+    {
+        id = NULL;
+        balance = NULL;
+        withdraw = NULL;
+    }
+    void Transfer(struct LinkedList *account, struct LinkedList *desaccount, double amount);
     void setname(void);
     void setid(void);
     void setbalance(void);
     void checkbalance();
     void WithdrawAmount();
     void generateReceipt();
+    void Deposit(double amount);
     long int getid();
 };
 long int user::getid()
@@ -75,7 +83,43 @@ struct LinkedList *SearchAccount(struct LinkedList **head, long int sid)
 }
 void deleteAccount(struct LinkedList **head, long int id)
 {
+    struct LinkedList *r, *temp, *prev;
     struct LinkedList *account = SearchAccount(head, id);
+    if (*head == NULL)
+    {
+        cout << "\n\nNo Matching Account Found";
+        return;
+    }
+    if (*head == account)
+    {
+        r = account;
+        *head = (*head)->next;
+        free(r);
+    }
+    else if (account->next = NULL)
+    {
+        temp = *head;
+        while (temp->next != NULL)
+        {
+            prev = temp;
+            temp = temp->next;
+        }
+        prev->next = NULL;
+        free(temp);
+    }
+    else
+    {
+        temp = *head;
+        while (temp->next != account)
+        {
+            temp = temp->next;
+        }
+        if (temp->next == account)
+        {
+            temp->next = NULL;
+            free(account);
+        }
+    }
 }
 struct LinkedList *head = NULL;
 void user::setname(void)
@@ -102,6 +146,24 @@ void user::WithdrawAmount()
     balance = balance - withdraw;
     cout << "\nTake Money !!!";
 }
+void user::Deposit(double amount)
+{
+    balance = balance + amount;
+}
+void user::Transfer(struct LinkedList *account, struct LinkedList *desaccount, double amount)
+{
+    if (balance < amount)
+    {
+        cout << "\nInsufficient Balance in account !!!";
+        return;
+    }
+    else
+    {
+        balance = balance - amount;
+        desaccount->obj.balance = desaccount->obj.balance + amount;
+        cout << "\n><><><><><><><> Transfer Successfull <><><><><><>><><><> ";
+    }
+}
 void user::generateReceipt(void)
 {
 
@@ -119,9 +181,9 @@ int menu(void)
 {
     int choice;
     cout << "\n\n\t------------------------------------------";
-    cout << "\n\n\t\t\t ATM machince software ";
+    cout << "\n\n\t\t Bank System software ";
     cout << "\n\n\t------------------------------------------";
-    cout << "\n\t 1-) Create Account \n\t 2-) Check Balance  \n\t 3-) Withdraw Amount\n\t 4-) Generate Receipt \n\t 5-) Exit ";
+    cout << "\n\t 1-) Create Account \n\t 2-) Check Balance  \n\t 3-) Withdraw Amount\n\t 4-) Generate Receipt \n\t 5-) Delete account \n\t 6-) Deposit Money \n\t 7-) Transfer Money \n\t 8-) Exit ";
     cout << "\n\n\tEnter choice :: ";
     cin >> choice;
     return (choice);
@@ -132,8 +194,9 @@ int main()
     {
         system("cls");
         int choice;
-        long int id;
-        struct LinkedList *account;
+        double amount;
+        long int id, tid;
+        struct LinkedList *account, *desaccount;
         choice = menu();
         switch (choice)
         {
@@ -174,6 +237,32 @@ int main()
             account->obj.generateReceipt();
             break;
         case 5:
+            cout << "\nEnter id of account :: ";
+            cin >> id;
+            deleteAccount(&head, id);
+            break;
+        case 6:
+            cout << "\nEnter id of account :: ";
+            cin >> id;
+            cout << "\nEnter amount To Be Deposited :: ";
+            cin >> amount;
+            cout << "\nProcessing.>.>.>.>.> ";
+            account = SearchAccount(&head, id);
+            account->obj.Deposit(amount);
+            break;
+        case 7:
+            cout << "\nEnter id of your account :: ";
+            cin >> id;
+            cout << "\nEnter id of destination account  :: ";
+            cin >> tid;
+            cout << "\nEnter amount to be tranfered :: ";
+            cin >> amount;
+            account = SearchAccount(&head, id);
+            desaccount = SearchAccount(&head, tid);
+            account->obj.Transfer(account, desaccount, amount);
+            break;
+
+        case 8:
             exit(0);
             break;
         default:
