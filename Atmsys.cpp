@@ -73,6 +73,10 @@ struct LinkedList *SearchAccount(struct LinkedList **head, long int sid)
     }
     return (NULL);
 }
+void deleteAccount(struct LinkedList **head, long int id)
+{
+    struct LinkedList *account = SearchAccount(head, id);
+}
 struct LinkedList *head = NULL;
 void user::setname(void)
 {
@@ -93,15 +97,6 @@ void user::checkbalance()
 }
 void user::WithdrawAmount()
 {
-
-    // struct LinkedList *acc;
-    // float wd;
-    // acc = SearchAccount(head, id);
-    // if (acc == NULL)
-    // {
-    //     printf("\nInvalid ID or Create New Account!!");
-    //     return;
-    // }
     cout << "\nEnter withdraw amount :";
     cin >> withdraw;
     balance = balance - withdraw;
