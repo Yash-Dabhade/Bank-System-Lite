@@ -190,6 +190,7 @@ int menu(void)
 }
 int main()
 {
+    system("color 02");
     while (1)
     {
         system("cls");
