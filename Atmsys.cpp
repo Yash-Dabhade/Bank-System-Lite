@@ -10,6 +10,7 @@ private:
     char username[20];
     long double balance;
     long double withdraw;
+    long int userpassword;
 
 public:
     user()
@@ -27,7 +28,13 @@ public:
     void generateReceipt();
     void Deposit(double amount);
     long int getid();
+    long int getpassword();
+    void setpassword();
 };
+long int user::getpassword()
+{
+    return (userpassword);
+}
 long int user::getid()
 {
     return (id);
@@ -46,6 +53,8 @@ void CreateAccount(struct LinkedList **head)
     temp->obj.setid();
     cout << "\nEnter Username :";
     temp->obj.setname();
+    cout << "\nCreate Password :";
+    temp->obj.setpassword();
     cout << "\nEnter balance :";
     temp->obj.setbalance();
     if (*head == NULL)
@@ -60,7 +69,28 @@ void CreateAccount(struct LinkedList **head)
         t->next = temp;
     }
 }
-struct LinkedList *SearchAccount(struct LinkedList **head, long int sid)
+struct LinkedList *SearchAccount(struct LinkedList **head, long int sid, long int password)
+{
+    if (*head == NULL)
+    {
+        cout << "\nNo account Found or Registered";
+        return (NULL);
+    }
+    long int i;
+    struct LinkedList *t;
+    t = *head;
+
+    while (t != NULL)
+    {
+        if (t->obj.getid() == sid && t->obj.getpassword() == password)
+        {
+            return (t);
+        }
+        t = t->next;
+    }
+    return (NULL);
+}
+struct LinkedList *SearchAccountfortranscation(struct LinkedList **head, long int sid)
 {
     if (*head == NULL)
     {
@@ -81,10 +111,10 @@ struct LinkedList *SearchAccount(struct LinkedList **head, long int sid)
     }
     return (NULL);
 }
-void deleteAccount(struct LinkedList **head, long int id)
+void deleteAccount(struct LinkedList **head, long int id, long int password)
 {
     struct LinkedList *r, *temp, *prev;
-    struct LinkedList *account = SearchAccount(head, id);
+    struct LinkedList *account = SearchAccount(head, id, password);
     if (*head == NULL)
     {
         cout << "\n\nNo Matching Account Found";
@@ -122,6 +152,10 @@ void deleteAccount(struct LinkedList **head, long int id)
     }
 }
 struct LinkedList *head = NULL;
+void user::setpassword(void)
+{
+    cin >> userpassword;
+}
 void user::setname(void)
 {
     cin >> username;
@@ -196,7 +230,7 @@ int main()
         system("cls");
         int choice;
         double amount;
-        long int id, tid;
+        long int id, tid, password;
         struct LinkedList *account, *desaccount;
         choice = menu();
         switch (choice)
@@ -207,10 +241,12 @@ int main()
         case 2:
             cout << "\nEnter id of account :: ";
             cin >> id;
-            account = SearchAccount(&head, id);
+            cout << "\nEnter Password:: ";
+            cin >> password;
+            account = SearchAccount(&head, id, password);
             if (account == NULL)
             {
-                cout << "\nInvalid id";
+                cout << "\nInvalid id or Password";
                 break;
             }
             account->obj.checkbalance();
@@ -218,10 +254,12 @@ int main()
         case 3:
             cout << "\nEnter id of account :: ";
             cin >> id;
-            account = SearchAccount(&head, id);
+            cout << "\nEnter password ::";
+            cin >> password;
+            account = SearchAccount(&head, id, password);
             if (account == NULL)
             {
-                cout << "\nInvalid id";
+                cout << "\nInvalid id or Password";
                 break;
             }
             account->obj.WithdrawAmount();
@@ -229,10 +267,12 @@ int main()
         case 4:
             cout << "\nEnter id of account :: ";
             cin >> id;
-            account = SearchAccount(&head, id);
+            cout << "\nEnter password ::";
+            cin >> password;
+            account = SearchAccount(&head, id, password);
             if (account == NULL)
             {
-                cout << "\nInvalid id";
+                cout << "\nInvalid id or password";
                 break;
             }
             account->obj.generateReceipt();
@@ -240,29 +280,41 @@ int main()
         case 5:
             cout << "\nEnter id of account :: ";
             cin >> id;
-            deleteAccount(&head, id);
+            cout << "\nEnter password ::";
+            cin >> password;
+            // account = SearchAccount(&head, id, password);
+            deleteAccount(&head, id, password);
             break;
         case 6:
             cout << "\nEnter id of account :: ";
             cin >> id;
+            cout << "\nEnter password ::";
+            cin >> password;
             cout << "\nEnter amount To Be Deposited :: ";
             cin >> amount;
             cout << "\nProcessing.>.>.>.>.> ";
-            account = SearchAccount(&head, id);
-            account->obj.Deposit(amount);
+            account = SearchAccount(&head, id, password);
+            if (account != NULL)
+                account->obj.Deposit(amount);
+            else
+            {
+                cout << "\nHuman Error";
+            }
+
             break;
         case 7:
             cout << "\nEnter id of your account :: ";
             cin >> id;
+            cout << "\nEnter Password of your Account :: ";
+            cin >> password;
             cout << "\nEnter id of destination account  :: ";
             cin >> tid;
             cout << "\nEnter amount to be tranfered :: ";
             cin >> amount;
-            account = SearchAccount(&head, id);
-            desaccount = SearchAccount(&head, tid);
+            account = SearchAccount(&head, id, password);
+            desaccount = SearchAccountfortranscation(&head, tid);
             account->obj.Transfer(account, desaccount, amount);
             break;
-
         case 8:
             exit(0);
             break;
